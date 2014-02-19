@@ -1,0 +1,24 @@
+<div ng-include="'partials/navbar'"></div>
+
+<div class="col-sm-12">
+  <table id="historic" class="table table-striped table-hover">
+    <thead>
+      <tr>
+        <td>User</td>
+        <td>Total Cost</td>
+        <td>Total Buyed</td>
+        <td>Total Sold</td>
+        <td>Date</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat='game in games'>
+        <td>{{game.userName}}</td>
+        <td>{{game.totalCost}}</td>
+        <td>{{game.totalBuyed}}</td>
+        <td>{{game.totalSold}}</td>
+        <td>{{game.date | date:'mediumDate'}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

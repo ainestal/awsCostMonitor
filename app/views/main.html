@@ -1,0 +1,58 @@
+<!-- <div ng-include src="'partials/navbar'"></div> -->
+
+<div class="row">
+  <div class="col-sm-12">
+    <table id="instances" class="table table-striped table-hover">
+      <thead>
+        <tr>
+          <td>ID</td>
+          <td>Name</td>
+          <td>Instance Type</td>
+          <td>Root Device Type</td>
+          <td>State</td>
+          <td>Key Name</td>
+          <td>Launch Time</td>
+          <td>Description</td>
+          <td>Environment</td>
+          <td>Contact</td>
+          <td>Workhours</td>
+          <td>CostGroup</td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat='instance in instancesList'>
+          <td>{{instance.id}}</td>
+          <td>{{instance.name}}</td>
+          <td>{{instance.instance_type}}</td>
+          <td>{{instance.root_device_type}}</td>
+          <td>{{instance.state}}</td>
+          <td>{{instance.key_name}}</td>
+          <td>{{instance.launch_time}}</td>
+          <td>{{instance.Description}}</td>
+          <td>{{instance.Environment}}</td>
+          <td>{{instance.Contact}}</td>
+          <td>{{instance.Workhours}}</td>
+          <td>{{instance.CostGroup}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<!-- <div class="col-sm-3">
+  <table id="historic" class="table table-striped table-hover col-sm-offset-3 col-sm-6">
+    <thead>
+      <tr>
+        <td>ID</td>
+        <td>Name</td>
+        <td>Instance Type</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat='order in normalOrders'>
+        <td>{{instance.id}}</td>
+        <td>{{instance.name}}</td>
+        <td>{{instance.instance_type}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div> -->
