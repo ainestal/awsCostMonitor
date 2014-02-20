@@ -13,7 +13,8 @@
             <!-- <td>Root Device Type</td> -->
             <td><strong>State</strong></td>
             <!-- <td>Key Name</td> -->
-            <!-- <td>Launch Time</td> -->
+            <td>Launch Time</td>
+            <td>CurrentCost</td>
             <!-- <td>Description</td> -->
             <!-- <td>Environment</td> -->
             <!-- <td>Contact</td> -->
@@ -21,7 +22,8 @@
             <td><strong>CostGroup</strong></td>
           </tr>
         </thead>
-        <tbody ui-sortable ng-model='instancesList'  style='cursor: move;'>
+        <!-- <tbody ui-sortable ng-model='instancesList'  style='cursor: move;'> -->
+        <tbody>
           <tr ng-repeat='instance in instancesList' class='instance'>
             <td>{{instance.id}}</td>
             <td>{{instance.name}}</td>
@@ -29,7 +31,8 @@
             <!-- <td>{{instance.root_device_type}}</td> -->
             <td>{{instance.state}}</td>
             <!-- <td>{{instance.key_name}}</td> -->
-            <!-- <td>{{instance.launch_time}}</td> -->
+            <td>{{instance.launch_time}}</td>
+            <td>{{instance.current_cost}}</td>
             <!-- <td>{{instance.Description}}</td> -->
             <!-- <td>{{instance.Environment}}</td> -->
             <!-- <td>{{instance.Contact}}</td> -->

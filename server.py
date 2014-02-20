@@ -6,12 +6,13 @@
 #################################################
 
 import sys
+from datetime import datetime, timedelta, date
 from boto import boto
 from boto import ec2
 from boto.ec2.connection import EC2Connection
 from boto.ec2.regioninfo import RegionInfo
 #from boto.emr.connection import EmrConnection
-from bottle import Bottle, route, run, error, static_file
+from bottle import *
 import json
 
 app = Bottle()
@@ -35,6 +36,16 @@ app = Bottle()
 #         return fn(*args, **kwargs)
 
 #     return _enable_cors
+
+def get_time_running(launch_time):
+  time_running = datetime.now() - datetime.strptime(launch_time[:-5], '%Y-%m-%dT%H:%M:%S')
+  time_running = int(time_running.total_seconds() / 3600)
+  return time_running
+
+
+
+def get_type_cost(instance_type):
+  return 1
 
 def _initialize_EC2Connection():
   AWS_ACCESS_KEY = boto.config.get('Credentials', 'aws_access_key_id')
@@ -67,7 +78,7 @@ def get_all_instances():
   instancesList = json.loads('[]')
   reservations = ec2Connection.get_all_reservations()
   for reservation in reservations:
-    for instance in reservation.instances:
+    for instance in reservation.instances:      
       row = json.loads('{}')
       row['id']               = instance.id
       row['name']             = instance_getTag(instance.tags, 'Name')
@@ -76,7 +87,9 @@ def get_all_instances():
       row['state']            = instance.state
       row['key_name']         = instance.key_name
       row['launch_time']      = instance.launch_time
-
+      current_cost = int(get_time_running(row['launch_time'])) * \
+                     int(get_type_cost(row['instance_type']))
+      row['current_cost']     = current_cost
       # Custom user tags
       row['Description']      = instance_getTag(instance.tags, 'Description')
       row['Environment']      = instance_getTag(instance.tags, 'Environment')
