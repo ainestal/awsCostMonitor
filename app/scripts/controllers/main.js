@@ -16,12 +16,12 @@ angular.module('awsCostMonitorApp')
       'Karma'
     ];
 
+    $scope.oneAtATime = true;
+
     $http.get('/api/all')
       .success(function(instancesList) {
         console.log('Success: ', instancesList);
         $scope.instancesList = instancesList;
       })
       .error(console.log('error retrieving the list'));
-
-
   });

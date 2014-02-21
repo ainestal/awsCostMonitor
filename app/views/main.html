@@ -1,42 +1,91 @@
 <!-- <div ng-include src="'partials/navbar'"></div> -->
 
+
 <div class='row'>
   <div class='col-md-7'>
     <div class='panel panel-primary'>
+      <div class='panel-heading'>List of instances</div>
+      <label class="checkbox">
+        <input type="checkbox" ng-model="oneAtATime">
+        Open only one at a time
+      </label>
+      <accordion close-others='oneAtATime' class='panel-body'>
+        <accordion-group ng-repeat='instance in instancesList' is-open='instance.isOpen'>
+          <accordion-heading>
+            <div class='accordion-heading-content'
+                 ng:class='{collapsed: instance.isOpen}'>
+              {{instance.id}} - {{instance.name}} - $ {{instance.current_cost}}
+            </div>
+          </accordion-heading>
+          <div>
+            <ul>
+              <li>ID: {{instance.id}}</li>
+              <li>Name: {{instance.name}}</li>
+              <li>Current Cost: $ {{instance.current_cost}}</li>
+              <li>Lauch Time: {{instance.launch_time}}</li>
+              <li>Instance Type: {{instance.instance_type}}</li>
+              <li>Root Device: {{instance.root_device_type}}</li>
+              <li>State: {{instance.state}}</li>
+              <li>Key Name: {{instance.key_name}}</li>
+              <strong>Custom tags</strong>
+              <li>Description: {{instance.Description}}</li>
+              <li>Environment: {{instance.Environment}}</li>
+              <li>Contact: {{instance.Contact}}</li>
+              <li>Workhours: {{instance.Workhours}}</li>
+              <li>Cost Group: {{instance.CostGroup}}</li>
+            </ul>      
+          </div>
+        </accordion-group>
+      </accordion>
+    </div>
+  </div>
+  <div class='col-md-5'>
+    <div class='panel panel-primary'>
+      <div class='panel-heading'>Details</div>
+      <div class='panel-body'>
+        Details of the account
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- <div class='row'>
+  <div class='col-md-7'>
+    <div class='panel panel-primary'>
       <div class='panel-heading table-responsive'>List of instances</div>
-      <table id='instances' class='panel-body table table-striped table-hover table-condensed'>
+      <table id='instances' class='panel-body table table-striped table-hover'>
         <thead>
           <tr>
             <td><strong>ID</strong></td>
             <td><strong>Name</strong></td>
-            <!-- <td>Instance Type</td> -->
-            <!-- <td>Root Device Type</td> -->
+            <td>Instance Type</td>
+            <td>Root Device Type</td>
             <td><strong>State</strong></td>
-            <!-- <td>Key Name</td> -->
-            <td>Launch Time</td>
-            <td>CurrentCost</td>
-            <!-- <td>Description</td> -->
-            <!-- <td>Environment</td> -->
-            <!-- <td>Contact</td> -->
-            <!-- <td>Workhours</td> -->
+            <td>Key Name</td>
+            <td><strong>Launch Time</strong></td>
+            <td><strong>CurrentCost</strong></td>
+            <td>Description</td>
+            <td>Environment</td>
+            <td>Contact</td>
+            <td>Workhours</td>
             <td><strong>CostGroup</strong></td>
+            <td></td>
           </tr>
         </thead>
-        <!-- <tbody ui-sortable ng-model='instancesList'  style='cursor: move;'> -->
         <tbody>
           <tr ng-repeat='instance in instancesList' class='instance'>
             <td>{{instance.id}}</td>
             <td>{{instance.name}}</td>
-            <!-- <td>{{instance.instance_type}}</td> -->
-            <!-- <td>{{instance.root_device_type}}</td> -->
+            <td>{{instance.instance_type}}</td>
+            <td>{{instance.root_device_type}}</td>
             <td>{{instance.state}}</td>
-            <!-- <td>{{instance.key_name}}</td> -->
+            <td>{{instance.key_name}}</td>
             <td>{{instance.launch_time}}</td>
-            <td>{{instance.current_cost}}</td>
-            <!-- <td>{{instance.Description}}</td> -->
-            <!-- <td>{{instance.Environment}}</td> -->
-            <!-- <td>{{instance.Contact}}</td> -->
-            <!-- <td>{{instance.Workhours}}</td> -->
+            <td>$ {{instance.current_cost}}</td>
+            <td>{{instance.Description}}</td>
+            <td>{{instance.Environment}}</td>
+            <td>{{instance.Contact}}</td>
+            <td>{{instance.Workhours}}</td>
             <td>{{instance.CostGroup}}</td>
           </tr>
         </tbody>
@@ -51,4 +100,4 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->

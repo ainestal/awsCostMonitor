@@ -15,6 +15,36 @@ from boto.ec2.regioninfo import RegionInfo
 from bottle import *
 import json
 
+INSTANCE_PRICES = {'m3.medium': 0.124,
+                  'm3.large':  0.248,
+                  'm3.xlarge': 0.495,
+                  'm3.2xlarge':  0.990,
+                  'm1.small':  0.065,
+                  'm1.medium': 0.130,
+                  'm1.large':  0.260,
+                  'm1.xlarge': 0.520,
+                  'c3.large':  0.171,
+                  'c3.xlarge': 0.342,
+                  'c3.2xlarge':  0.683,
+                  'c3.4xlarge':  1.366,
+                  'c3.8xlarge':  2.732,
+                  'c1.medium': 0.165,
+                  'c1.xlarge': 0.660,
+                  'cc2.8xlarge': 2.700,
+                  'g2.2xlarge':  0.702,
+                  'cg1.4xlarge': 2.36,
+                  'm2.xlarge': 0.460,
+                  'm2.2xlarge':  0.920,
+                  'm2.4xlarge':  1.840,
+                  'cr1.8xlarge': 3.750,
+                  'i2.xlarge': 0.938,
+                  'i2.2xlarge':  1.876,
+                  'i2.4xlarge':  3.751,
+                  'i2.8xlarge':  7.502,
+                  'hs1.8xlarge': 4.900,
+                  'hi1.4xlarge': 3.100,
+                  't1.micro':  0.020}
+
 app = Bottle()
 
 ############################################################################
@@ -45,7 +75,7 @@ def get_time_running(launch_time):
 
 
 def get_type_cost(instance_type):
-  return 1
+  return INSTANCE_PRICES[instance_type]
 
 def _initialize_EC2Connection():
   AWS_ACCESS_KEY = boto.config.get('Credentials', 'aws_access_key_id')
@@ -87,9 +117,11 @@ def get_all_instances():
       row['state']            = instance.state
       row['key_name']         = instance.key_name
       row['launch_time']      = instance.launch_time
-      current_cost = int(get_time_running(row['launch_time'])) * \
-                     int(get_type_cost(row['instance_type']))
-      row['current_cost']     = current_cost
+      current_cost = get_time_running(row['launch_time']) * get_type_cost(row['instance_type'])
+      if row['state'] == 'running':
+        row['current_cost']   = round(current_cost, 2)
+      else:
+        row['current_cost']   = 'stopped'
       # Custom user tags
       row['Description']      = instance_getTag(instance.tags, 'Description')
       row['Environment']      = instance_getTag(instance.tags, 'Environment')
@@ -102,13 +134,13 @@ def get_all_instances():
 
 @error(404)
 def error404(error):
-  return 'Error 404. "' + error + '" does not exist in our system'
+  return 'Error 404. '' + error + '' does not exist in our system'
 
 ############################################################################
 # Main
 ############################################################################
-if __name__ == "__main__":
+if __name__ == '__main__':
   ec2Connection = _initialize_EC2Connection()
   #ec2Connection = _initialize_EC2Connection()
   #self.emrConnection = _initialize_EmrConnection()
-  run(app, host="0.0.0.0", port = 8080)
+  run(app, host='0.0.0.0', port = 8080)

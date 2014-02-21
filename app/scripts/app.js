@@ -5,7 +5,7 @@ angular.module('awsCostMonitorApp', [
   'ngResource',
   'ngSanitize',
   'ngRoute',
-  'ui.sortable'
+  'ui.bootstrap'
 ])
   .config(function ($routeProvider, $locationProvider, $httpProvider) {
     $routeProvider
