@@ -17,87 +17,37 @@
               {{instance.id}} - {{instance.name}} - $ {{instance.current_cost}}
             </div>
           </accordion-heading>
-          <div>
-            <ul>
+          <div class='row'>
+            <ul class='col-md-5 col-md-offset-1'>
               <li>ID: {{instance.id}}</li>
               <li>Name: {{instance.name}}</li>
               <li>Current Cost: $ {{instance.current_cost}}</li>
               <li>Lauch Time: {{instance.launch_time}}</li>
               <li>Instance Type: {{instance.instance_type}}</li>
-              <li>Root Device: {{instance.root_device_type}}</li>
+              <li>EBS Optimized: {{instance.ebs_optimized}}</li>
               <li>State: {{instance.state}}</li>
               <li>Key Name: {{instance.key_name}}</li>
-              <strong>Custom tags</strong>
+            </ul>
+            <ul class='col-md-6'>
+              <br/><strong>Custom tags</strong>
               <li>Description: {{instance.Description}}</li>
               <li>Environment: {{instance.Environment}}</li>
               <li>Contact: {{instance.Contact}}</li>
               <li>Workhours: {{instance.Workhours}}</li>
               <li>Cost Group: {{instance.CostGroup}}</li>
-            </ul>      
+            </ul>
           </div>
         </accordion-group>
       </accordion>
     </div>
   </div>
   <div class='col-md-5'>
-    <div class='panel panel-primary'>
-      <div class='panel-heading'>Details</div>
+    <div class='panel panel-primary' data-spy='affix' data-offset-top='10' data-offset-bottom='200'>
+      <div class='panel-heading'>Details of the account</div>
       <div class='panel-body'>
-        Details of the account
+        <br/>
+        Total Current Cost: $ {{totalCost}}
       </div>
     </div>
   </div>
 </div>
-
-<!-- <div class='row'>
-  <div class='col-md-7'>
-    <div class='panel panel-primary'>
-      <div class='panel-heading table-responsive'>List of instances</div>
-      <table id='instances' class='panel-body table table-striped table-hover'>
-        <thead>
-          <tr>
-            <td><strong>ID</strong></td>
-            <td><strong>Name</strong></td>
-            <td>Instance Type</td>
-            <td>Root Device Type</td>
-            <td><strong>State</strong></td>
-            <td>Key Name</td>
-            <td><strong>Launch Time</strong></td>
-            <td><strong>CurrentCost</strong></td>
-            <td>Description</td>
-            <td>Environment</td>
-            <td>Contact</td>
-            <td>Workhours</td>
-            <td><strong>CostGroup</strong></td>
-            <td></td>
-          </tr>
-        </thead>
-        <tbody>
-          <tr ng-repeat='instance in instancesList' class='instance'>
-            <td>{{instance.id}}</td>
-            <td>{{instance.name}}</td>
-            <td>{{instance.instance_type}}</td>
-            <td>{{instance.root_device_type}}</td>
-            <td>{{instance.state}}</td>
-            <td>{{instance.key_name}}</td>
-            <td>{{instance.launch_time}}</td>
-            <td>$ {{instance.current_cost}}</td>
-            <td>{{instance.Description}}</td>
-            <td>{{instance.Environment}}</td>
-            <td>{{instance.Contact}}</td>
-            <td>{{instance.Workhours}}</td>
-            <td>{{instance.CostGroup}}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-  <div class='col-md-5'>
-    <div class='panel panel-primary'>
-      <div class='panel-heading table-responsive'>Details</div>
-      <div class='panel-body'>
-        Tralara
-      </div>
-    </div>
-  </div>
-</div> -->

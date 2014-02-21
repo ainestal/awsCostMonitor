@@ -104,6 +104,12 @@ def send_static(filename):
                        root='/home/ainestal/Development/awsCostMonitor/dist')
 
 @app.route('/api/all')
+def get_all():
+  instancesList = get_all_instances()
+  volumesList   = get_all_volumes()
+  return json.dumps([json.loads(instancesList),json.loads(volumesList)])
+
+@app.route('/api/instances')
 def get_all_instances():
   instancesList = json.loads('[]')
   reservations = ec2Connection.get_all_reservations()
@@ -114,6 +120,7 @@ def get_all_instances():
       row['name']             = instance_getTag(instance.tags, 'Name')
       row['instance_type']    = instance.instance_type
       row['root_device_type'] = instance.root_device_type
+      row['ebs_optimized']    = instance.ebs_optimized
       row['state']            = instance.state
       row['key_name']         = instance.key_name
       row['launch_time']      = instance.launch_time
@@ -121,7 +128,7 @@ def get_all_instances():
       if row['state'] == 'running':
         row['current_cost']   = round(current_cost, 2)
       else:
-        row['current_cost']   = 'stopped'
+        row['current_cost']   = 'N/A. Stopped instance'
       # Custom user tags
       row['Description']      = instance_getTag(instance.tags, 'Description')
       row['Environment']      = instance_getTag(instance.tags, 'Environment')
@@ -131,6 +138,28 @@ def get_all_instances():
       instancesList.append(row)
   instancesList = json.dumps(instancesList)
   return instancesList
+
+@app.route('/api/volumes')
+def get_all_volumes():
+  volumesList = json.loads('[]')
+  volumes = ec2Connection.get_all_volumes()
+  for volume in volumes:
+    row = json.loads('{}')
+    row['id']                 = volume.id
+    row['create_time']        = volume.create_time
+    row['volume_status']      = volume.status
+    row['size']               = volume.size
+    row['snapshot_id']        = volume.snapshot_id
+    row['zone']               = volume.zone
+    row['type']               = volume.type
+    row['iops']               = volume.iops
+    row['instance_id']        = volume.attach_data.instance_id
+    row['instance_status']    = volume.attach_data.status
+    row['attach_time']        = volume.attach_data.attach_time
+    row['device']             = volume.attach_data.device
+    volumesList.append(row)
+  volumesList = json.dumps(volumesList)
+  return volumesList
 
 @error(404)
 def error404(error):

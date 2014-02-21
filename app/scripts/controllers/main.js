@@ -15,13 +15,20 @@ angular.module('awsCostMonitorApp')
       'AngularJS',
       'Karma'
     ];
-
+    $scope.totalCost = 0;
     $scope.oneAtATime = true;
 
     $http.get('/api/all')
-      .success(function(instancesList) {
-        console.log('Success: ', instancesList);
-        $scope.instancesList = instancesList;
+      .success(function(response) {
+        $scope.instancesList = response[0];
+        $scope.volumesList   = response[1];
+
+        var index;
+        for (index = 0; index < instancesList.length; ++index) {
+          if (instancesList[index].current_cost != 'N/A. Stopped instance'){
+            $scope.totalCost = $scope.totalCost + instancesList[index].current_cost;
+          }
+        }
       })
       .error(console.log('error retrieving the list'));
   });
