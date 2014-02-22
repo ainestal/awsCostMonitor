@@ -14,9 +14,14 @@
           <accordion-heading>
             <div class='accordion-heading-content'
                  ng:class='{collapsed: instance.isOpen}'>
+              <span class="glyphicon glyphicon-expand"></span>
               {{instance.id}} - {{instance.name}} - $ {{instance.current_cost}}
             </div>
           </accordion-heading>
+          <div class='row'>
+            <div class='col-md-5 col-md-offset-1'><strong>Instance</strong></div>
+            <div class='col-md-5 col-md-offset-1'><strong>Custom tags</strong></div>
+          </div>
           <div class='row'>
             <ul class='col-md-5 col-md-offset-1'>
               <li>ID: {{instance.id}}</li>
@@ -28,13 +33,21 @@
               <li>State: {{instance.state}}</li>
               <li>Key Name: {{instance.key_name}}</li>
             </ul>
-            <ul class='col-md-6'>
-              <br/><strong>Custom tags</strong>
+            <ul class='col-md-5 col-md-offset-1'>
               <li>Description: {{instance.Description}}</li>
               <li>Environment: {{instance.Environment}}</li>
               <li>Contact: {{instance.Contact}}</li>
               <li>Workhours: {{instance.Workhours}}</li>
               <li>Cost Group: {{instance.CostGroup}}</li>
+            </ul>
+          </div>
+          <div class='col-md-11 col-md-offset-1'><strong>Volumes</strong></div>
+          <div class='row'>            
+            <ul class='col-md-5 col-md-offset-1' ng-repeat='volume in instance.volumes'>              
+              <li>VolumeId: {{volume.id}}</li>
+              <li>Created: {{volume.create_time}}</li>
+              <li>Size: {{volume.size}} GB</li>
+              <li>IOPS: {{volume.iops}}</li>
             </ul>
           </div>
         </accordion-group>
