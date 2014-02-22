@@ -15,68 +15,159 @@ from boto.ec2.regioninfo import RegionInfo
 from bottle import *
 import json
 
-INSTANCE_PRICES = {'m3.medium': 0.124,
-                  'm3.large':  0.248,
-                  'm3.xlarge': 0.495,
-                  'm3.2xlarge':  0.990,
-                  'm1.small':  0.065,
-                  'm1.medium': 0.130,
-                  'm1.large':  0.260,
-                  'm1.xlarge': 0.520,
-                  'c3.large':  0.171,
-                  'c3.xlarge': 0.342,
-                  'c3.2xlarge':  0.683,
-                  'c3.4xlarge':  1.366,
-                  'c3.8xlarge':  2.732,
-                  'c1.medium': 0.165,
-                  'c1.xlarge': 0.660,
-                  'cc2.8xlarge': 2.700,
-                  'g2.2xlarge':  0.702,
-                  'cg1.4xlarge': 2.36,
-                  'm2.xlarge': 0.460,
-                  'm2.2xlarge':  0.920,
-                  'm2.4xlarge':  1.840,
-                  'cr1.8xlarge': 3.750,
-                  'i2.xlarge': 0.938,
-                  'i2.2xlarge':  1.876,
-                  'i2.4xlarge':  3.751,
-                  'i2.8xlarge':  7.502,
-                  'hs1.8xlarge': 4.900,
-                  'hi1.4xlarge': 3.100,
-                  't1.micro':  0.020}
+INSTANCE_PRICES_LINUX_UK = {'m3.medium': 0.124,
+                            'm3.large':  0.248,
+                            'm3.xlarge': 0.495,
+                            'm3.2xlarge':  0.990,
+                            'm1.small':  0.065,
+                            'm1.medium': 0.130,
+                            'm1.large':  0.260,
+                            'm1.xlarge': 0.520,
+                            'c3.large':  0.171,
+                            'c3.xlarge': 0.342,
+                            'c3.2xlarge':  0.683,
+                            'c3.4xlarge':  1.366,
+                            'c3.8xlarge':  2.732,
+                            'c1.medium': 0.165,
+                            'c1.xlarge': 0.660,
+                            'cc2.8xlarge': 2.700,
+                            'g2.2xlarge':  0.702,
+                            'cg1.4xlarge': 2.36,
+                            'm2.xlarge': 0.460,
+                            'm2.2xlarge':  0.920,
+                            'm2.4xlarge':  1.840,
+                            'cr1.8xlarge': 3.750,
+                            'i2.xlarge': 0.938,
+                            'i2.2xlarge':  1.876,
+                            'i2.4xlarge':  3.751,
+                            'i2.8xlarge':  7.502,
+                            'hs1.8xlarge': 4.900,
+                            'hi1.4xlarge': 3.100,
+                            't1.micro':  0.020}
+VOLUME_PRICES_UK = {'storage': 0.055,
+                    # ToDo: Get the number of requests
+                    'millon-requests': 0.055,
+                    'provisioned-storage': 0.138,
+                    'provisioned-iops': 0.11,
+                    'snapsot-storage': 0.095}
 
 app = Bottle()
 
-############################################################################
-# Generic functions
-############################################################################
-# class EnableCors(object):
-#   name = 'enable_cors'
-#   api = 2
+##########
+# Get how much time has an instance been running
+##########
+def get_hours_running(launch_time):
+  time_running = datetime.now() -\
+                 datetime.strptime(launch_time[:-5], '%Y-%m-%dT%H:%M:%S')
+  return int(time_running.total_seconds() / 3600)
 
-#   def apply(self, fn, context):
-#     def _enable_cors(*args, **kwargs):
-#       # set CORS headers
-#       response.headers['Access-Control-Allow-Origin'] = '*'
-#       response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, OPTIONS'
-#       response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
-
-#       if bottle.request.method != 'OPTIONS':
-#         # actual request; reply with the actual response
-#         return fn(*args, **kwargs)
-
-#     return _enable_cors
-
-def get_time_running(launch_time):
-  time_running = datetime.now() - datetime.strptime(launch_time[:-5], '%Y-%m-%dT%H:%M:%S')
-  time_running = int(time_running.total_seconds() / 3600)
-  return time_running
+##########
+# Get how much time has a volume been existing
+# param1: creation date as string
+# Returns: time in months
+##########
+def get_months_existing(creation):
+  time_running = datetime.now() -\
+                 datetime.strptime(creation[:-5], '%Y-%m-%dT%H:%M:%S')
+  return int(time_running.total_seconds() / 2592000)
 
 
+##########
+# 0 if null
+##########
+def zero_if_null(value):
+  if value == None:
+    value = 0
+  return value
 
+##########
+# Cost of the type of instance
+##########
 def get_type_cost(instance_type):
-  return INSTANCE_PRICES[instance_type]
+  return INSTANCE_PRICES_LINUX_UK[instance_type]
 
+##########
+# Get the current instance cost since it is running
+##########
+def get_instance_cost(instance):  
+  if instance.state == 'running':
+    current_cost = get_hours_running(instance.launch_time) *\
+                   get_type_cost(instance.instance_type)
+  else:
+    current_cost = 0
+  return float(current_cost)
+
+##########
+# Get the instance cost per day
+##########
+def get_instance_cost_per_day(instance):
+  return float(get_type_cost(instance.instance_type) * 24)
+
+##########
+# Get the instance cost per month
+##########
+def get_instance_cost_per_month(instance):
+  return float(get_type_cost(instance.instance_type) * 30 * 24)
+
+##########
+# Get the instance cost per year
+##########
+def get_instance_cost_per_year(instance):
+  return float(get_type_cost(instance.instance_type) * 365 * 24)
+
+##########
+# Get the current volume cost from its creation
+##########
+def get_volume_cost(volume):
+  if volume.iops == None or volume.iops == 0:
+    # ToDo: Get the number of requests
+    current_cost = volume.size * VOLUME_PRICES_UK['storage'] *\
+                   get_months_existing(volume.create_time)
+  else:
+    current_cost = (volume.size * VOLUME_PRICES_UK['provisioned-storage'] +\
+                   volume.iops * VOLUME_PRICES_UK['provisioned-iops']) *\
+                   get_months_existing(volume.create_time)
+  return float(current_cost)
+
+##########
+# Get the volume cost per day
+##########
+def get_volume_cost_per_day(volume):
+  if volume.iops == None or volume.iops == 0:
+    # ToDo: Get the number of requests
+    current_cost = volume.size * VOLUME_PRICES_UK['storage'] / 30
+  else:
+    current_cost = (volume.size * VOLUME_PRICES_UK['provisioned-storage'] +\
+                    volume.iops * VOLUME_PRICES_UK['provisioned-iops']) / 30
+  return float(current_cost)
+
+##########
+# Get the volume cost per month
+##########
+def get_volume_cost_per_month(volume):
+  if volume.iops == None or volume.iops == 0:
+    # ToDo: Get the number of requests
+    current_cost = volume.size * VOLUME_PRICES_UK['storage']
+  else:
+    current_cost = (volume.size * VOLUME_PRICES_UK['provisioned-storage'] +\
+                   volume.iops * VOLUME_PRICES_UK['provisioned-iops'])
+  return float(current_cost)
+
+##########
+# Get the volume cost per year
+##########
+def get_volume_cost_per_year(volume):
+  if volume.iops == None or volume.iops == 0:
+    # ToDo: Get the number of requests
+    current_cost = volume.size * VOLUME_PRICES_UK['storage'] * 12
+  else:
+    current_cost = (volume.size * VOLUME_PRICES_UK['provisioned-storage'] +\
+                    volume.iops * VOLUME_PRICES_UK['provisioned-iops']) * 12 
+  return float(current_cost)
+
+##########
+# Create the ec2 connection and make it ready to be used
+##########
 def _initialize_EC2Connection():
   AWS_ACCESS_KEY = boto.config.get('Credentials', 'aws_access_key_id')
   AWS_SECRET_KEY = boto.config.get('Credentials', 'aws_secret_access_key')
@@ -84,6 +175,9 @@ def _initialize_EC2Connection():
                           endpoint='ec2.eu-west-1.amazonaws.com')
   return EC2Connection(AWS_ACCESS_KEY, AWS_SECRET_KEY, region=regionEC2)
 
+##########
+# Get a custom tag from the instance
+##########
 def instance_getTag(tags, tag_key):
   if tags.has_key(tag_key):
     return tags[tag_key]
@@ -93,6 +187,9 @@ def instance_getTag(tags, tag_key):
 ############################################################################
 # Routes
 ############################################################################
+##########
+# Provide the Client side content
+##########
 @app.route('/')
 def hello():
   return static_file('index.html', 
@@ -124,11 +221,11 @@ def get_all_instances():
       row['state']            = instance.state
       row['key_name']         = instance.key_name
       row['launch_time']      = instance.launch_time
-      current_cost = get_time_running(row['launch_time']) * get_type_cost(row['instance_type'])
-      if row['state'] == 'running':
-        row['current_cost']   = round(current_cost, 2)
-      else:
-        row['current_cost']   = 'N/A. Stopped instance'
+      row['current_cost']     = get_instance_cost(instance)
+      row['hour_cost']        = get_type_cost(instance.instance_type)
+      row['day_cost']         = get_instance_cost_per_day(instance)
+      row['month_cost']       = get_instance_cost_per_month(instance)
+      row['year_cost']        = get_instance_cost_per_year(instance)
       # Custom user tags
       row['Description']      = instance_getTag(instance.tags, 'Description')
       row['Environment']      = instance_getTag(instance.tags, 'Environment')
@@ -152,7 +249,11 @@ def get_all_volumes():
     row['snapshot_id']        = volume.snapshot_id
     row['zone']               = volume.zone
     row['type']               = volume.type
-    row['iops']               = volume.iops
+    row['iops']               = zero_if_null(volume.iops)
+    row['current_cost']       = get_volume_cost(volume)
+    row['day_cost']           = get_volume_cost_per_day(volume)
+    row['month_cost']         = get_volume_cost_per_month(volume)
+    row['year_cost']          = get_volume_cost_per_year(volume)
     row['instance_id']        = volume.attach_data.instance_id
     row['instance_status']    = volume.attach_data.status
     row['attach_time']        = volume.attach_data.attach_time

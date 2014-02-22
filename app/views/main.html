@@ -5,17 +5,19 @@
   <div class='col-md-7'>
     <div class='panel panel-primary'>
       <div class='panel-heading'>List of instances</div>
+      <br/>
+      <button class='btn btn-success' ng-click='expandAll()'>Expand All</button>
+      <button class='btn btn-warning' ng-click='collapseAll()'>Collapse All</button>
       <label class="checkbox">
-        <input type="checkbox" ng-model="oneAtATime">
-        Open only one at a time
+        <input type="checkbox" ng-model="oneAtATime">Open only one at a time
       </label>
       <accordion close-others='oneAtATime' class='panel-body'>
         <accordion-group ng-repeat='instance in instancesList' is-open='instance.isOpen'>
           <accordion-heading>
-            <div class='accordion-heading-content'
-                 ng:class='{collapsed: instance.isOpen}'>
-              <span class="glyphicon glyphicon-expand"></span>
-              {{instance.id}} - {{instance.name}} - $ {{instance.current_cost}}
+            <div class='accordion-heading-content' ng:class='{collapsed: instance.isOpen}'>
+              {{instance.id}} - {{instance.name}} - $/M: {{instance.aggregated_month_cost | number:2}} - $/Y: {{instance.aggregated_year_cost | number:2}}
+              <i class="pull-right glyphicon col-md-1" 
+                        ng-class="{'glyphicon-chevron-down': instance.isOpen, 'glyphicon-chevron-right': !instance.isOpen}"></i>
             </div>
           </accordion-heading>
           <div class='row'>
@@ -25,13 +27,16 @@
           <div class='row'>
             <ul class='col-md-5 col-md-offset-1'>
               <li>ID: {{instance.id}}</li>
-              <li>Name: {{instance.name}}</li>
-              <li>Current Cost: $ {{instance.current_cost}}</li>
+              <li>Name: {{instance.name}}</li>              
               <li>Lauch Time: {{instance.launch_time}}</li>
               <li>Instance Type: {{instance.instance_type}}</li>
               <li>EBS Optimized: {{instance.ebs_optimized}}</li>
               <li>State: {{instance.state}}</li>
               <li>Key Name: {{instance.key_name}}</li>
+              <li>Current Cost: $ {{instance.current_cost | number:2}}</li>
+              <li>Cost per Day: $ {{instance.day_cost | number:2}}</li>
+              <li>Cost per Month: $ {{instance.month_cost | number:2}}</li>
+              <li>Cost per Year: $ {{instance.year_cost | number:2}}</li>
             </ul>
             <ul class='col-md-5 col-md-offset-1'>
               <li>Description: {{instance.Description}}</li>
@@ -50,6 +55,10 @@
               <li>Created: {{volume.create_time}}</li>
               <li>Size: {{volume.size}} GB</li>
               <li>IOPS: {{volume.iops}}</li>
+              <li>Current Cost: $ {{volume.current_cost | number:2}}</li>
+              <li>Cost per Day: $ {{volume.day_cost | number:2}}</li>
+              <li>Cost per Month: $ {{volume.month_cost | number:2}}</li>
+              <li>Cost per Year: $ {{volume.year_cost | number:2}}</li>
             </ul>
           </div>
         </accordion-group>
@@ -60,8 +69,23 @@
     <div class='panel panel-primary' data-spy='affix' data-offset-top='10' data-offset-bottom='200'>
       <div class='panel-heading'>Details of the account</div>
       <div class='panel-body'>
-        <br/>
-        Total Current Cost: $ {{totalCost}}
+        <table class='table table-hover'>
+          <tr>
+            <td>Total Current Cost:</td>
+            <td>$ {{totalCost | number:2}}</td>
+          <tr>
+            <td>Total Cost per Day:</td>
+            <td>$ {{totalCostDay | number:2}}</td>
+          </tr>
+          <tr>
+            <td>Total Cost per Month:</td>
+            <td>$ {{totalCostMonth | number:2}}</td>
+          </tr>
+          <tr>
+            <td>Total Cost per Year:</td>
+            <td>$ {{totalCostYear | number:2}}</td>
+          </tr>
+        </table>
       </div>
     </div>
   </div>

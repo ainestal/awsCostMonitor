@@ -20,22 +20,52 @@ angular.module('awsCostMonitorApp')
 
     $http.get('/api/all')
       .success(function(response) {
-        $scope.instancesList = response[0];
-        $scope.volumesList   = response[1];
+        $scope.instancesList  = response[0];
+        $scope.volumesList    = response[1];
         $scope.totalCost      = 0;
+        $scope.totalCostDay   = 0;
+        $scope.totalCostMonth = 0;
+        $scope.totalCostYear  = 0;
 
-// solo está insertando en la primera instancia
         for (var i = 0; i < $scope.instancesList.length; i++){
+
+          $scope.totalCost      += $scope.instancesList[i]['current_cost'];
+          $scope.totalCostDay   += $scope.instancesList[i]['hour_cost'];
+          $scope.totalCostMonth += $scope.instancesList[i]['month_cost'];
+          $scope.totalCostYear  += $scope.instancesList[i]['year_cost'];
+          $scope.instancesList[i]['aggregated_cost']       = $scope.instancesList[i]['current_cost'];
+          $scope.instancesList[i]['aggregated_day_cost']   = $scope.instancesList[i]['day_cost'];
+          $scope.instancesList[i]['aggregated_month_cost'] = $scope.instancesList[i]['month_cost'];
+          $scope.instancesList[i]['aggregated_year_cost']  = $scope.instancesList[i]['year_cost'];
           $scope.instancesList[i]['volumes'] = [];
+
           for (var j = 0; j < $scope.volumesList.length; j++){
             if ($scope.instancesList[i]['id'] == $scope.volumesList[j]['instance_id']){              
+              $scope.totalCost      += $scope.volumesList[j]['current_cost'];
+              $scope.totalCostDay   += $scope.volumesList[j]['day_cost'];
+              $scope.totalCostMonth += $scope.volumesList[j]['month_cost'];
+              $scope.totalCostYear  += $scope.volumesList[j]['year_cost'];
+              $scope.instancesList[i]['aggregated_cost']       += $scope.volumesList[j]['current_cost'];
+              $scope.instancesList[i]['aggregated_day_cost']   += $scope.volumesList[j]['day_cost'];
+              $scope.instancesList[i]['aggregated_month_cost'] += $scope.volumesList[j]['month_cost'];
+              $scope.instancesList[i]['aggregated_year_cost']  += $scope.volumesList[j]['year_cost'];
               $scope.instancesList[i]['volumes'].push($scope.volumesList[j]);
             }
           }
-          if ($scope.instancesList[i]['current_cost'] != 'N/A. Stopped instance'){
-            $scope.totalCost = $scope.totalCost + $scope.instancesList[i]['current_cost'];
-          }
         };
       })
-      .error(console.log('error retrieving the list'));
+      .error(console.log('error retrieving the data'));
+
+    $scope.expandAll = function(){
+      for (var i=0; i < $scope.instancesList.length; i++){
+        $scope.instancesList[i].isOpen = true;
+        $scope.oneAtATime = false;
+      };
+    };
+
+    $scope.collapseAll = function(){
+      for (var i=0; i < $scope.instancesList.length; i++){
+        $scope.instancesList[i].isOpen = false;
+      };
+    };
   });
