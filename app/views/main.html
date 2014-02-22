@@ -41,7 +41,9 @@
               <li>Cost Group: {{instance.CostGroup}}</li>
             </ul>
           </div>
-          <div class='col-md-11 col-md-offset-1'><strong>Volumes</strong></div>
+          <div class='row'>
+            <div class='col-md-11 col-md-offset-1'><strong>Volumes</strong></div>
+          </div>
           <div class='row'>            
             <ul class='col-md-5 col-md-offset-1' ng-repeat='volume in instance.volumes'>              
               <li>VolumeId: {{volume.id}}</li>
