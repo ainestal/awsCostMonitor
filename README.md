@@ -1,7 +1,9 @@
 awsCostMonitor
 ==============
 
-Get the live costs of the AWS objects
+Get the live costs of the AWS objects.
+This is a web application that allows you to fetch data from Amazon Web Services to see the current usage and the cost that this activity is generating.
+It displays all the instances you have and the volumes attached to them getting the cost of all together.
 
 Requeriments:
   To run the app:
