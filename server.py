@@ -193,12 +193,12 @@ def instance_getTag(tags, tag_key):
 @app.route('/')
 def hello():
   return static_file('index.html', 
-                     root='/home/ainestal/Development/awsCostMonitor/dist')
+                     root='./dist')
 
 @app.route('/<filename:path>')
 def send_static(filename):
     return static_file(filename, 
-                       root='/home/ainestal/Development/awsCostMonitor/dist')
+                       root='./dist')
 
 @app.route('/api/all')
 def get_all():
