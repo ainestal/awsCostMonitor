@@ -1,21 +1,20 @@
-<!-- <div ng-include src="'partials/navbar'"></div> -->
-
-
+<nav class='navbar navbar-default col-md-12'>
+  <div class='container'></div>
+    <button type='button' class='btn btn-primary navbar-btn col-md-1' ng-click='expandAll()'>Expand All</button>
+    <button class='btn btn-warning navbar-btn col-md-1' ng-click='collapseAll()'>Collapse All</button>
+    <label class='checkbox col-md-2'><input type="checkbox" ng-model="oneAtATime">Open only one at a time</label>
+    <button class='btn btn-primary navbar-btn pull-right col-md-1' ng-click='load()'><span class="glyphicon glyphicon-refresh"></span> Refresh</button>
+  </div>
+</nav>
 <div class='row'>
   <div class='col-md-7'>
     <div class='panel panel-primary'>
       <div class='panel-heading'>List of instances</div>
-      <br/>
-      <button class='btn btn-success' ng-click='expandAll()'>Expand All</button>
-      <button class='btn btn-warning' ng-click='collapseAll()'>Collapse All</button>
-      <label class="checkbox">
-        <input type="checkbox" ng-model="oneAtATime">Open only one at a time
-      </label>
       <accordion close-others='oneAtATime' class='panel-body'>
         <accordion-group ng-repeat='instance in instancesList' is-open='instance.isOpen'>
           <accordion-heading>
             <div class='accordion-heading-content' ng:class='{collapsed: instance.isOpen}'>
-              {{instance.id}} - {{instance.name}} - $/M: {{instance.aggregated_month_cost | number:2}} - $/Y: {{instance.aggregated_year_cost | number:2}}
+              {{instance.id}} - {{instance.name}} --- $ {{instance.aggregated_year_cost | number:2}} / Year --- {{instance.state}}
               <i class="pull-right glyphicon col-md-1" 
                         ng-class="{'glyphicon-chevron-down': instance.isOpen, 'glyphicon-chevron-right': !instance.isOpen}"></i>
             </div>
@@ -34,9 +33,9 @@
               <li>State: {{instance.state}}</li>
               <li>Key Name: {{instance.key_name}}</li>
               <li>Current Cost: $ {{instance.current_cost | number:2}}</li>
-              <li>Cost per Day: $ {{instance.day_cost | number:2}}</li>
-              <li>Cost per Month: $ {{instance.month_cost | number:2}}</li>
-              <li>Cost per Year: $ {{instance.year_cost | number:2}}</li>
+              <li>Cost per Day (if running): $ {{instance.day_cost | number:2}}</li>
+              <li>Cost per Month (if running): $ {{instance.month_cost | number:2}}</li>
+              <li>Cost per Year (if running): $ {{instance.year_cost | number:2}}</li>
             </ul>
             <ul class='col-md-5 col-md-offset-1'>
               <li>Description: {{instance.Description}}</li>
@@ -66,7 +65,7 @@
     </div>
   </div>
   <div class='col-md-5'>
-    <div class='panel panel-primary' data-spy='affix' data-offset-top='10' data-offset-bottom='200'>
+    <div class='panel panel-primary' data-spy='affix'>
       <div class='panel-heading'>Details of the account</div>
       <div class='panel-body'>
         <table class='table table-hover'>
