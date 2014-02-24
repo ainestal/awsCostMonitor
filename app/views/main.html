@@ -32,10 +32,10 @@
               <li>EBS Optimized: {{instance.ebs_optimized}}</li>
               <li>State: {{instance.state}}</li>
               <li>Key Name: {{instance.key_name}}</li>
-              <li>Current Cost: $ {{instance.current_cost | number:2}}</li>
-              <li>Cost per Day (if running): $ {{instance.day_cost | number:2}}</li>
-              <li>Cost per Month (if running): $ {{instance.month_cost | number:2}}</li>
-              <li>Cost per Year (if running): $ {{instance.year_cost | number:2}}</li>
+              <li>Current Cost: $ {{instance.current_cost | number:2}} ({{instance.aggregated_cost_percent | number:2}} %)</li>
+              <li>Cost per Day (if running): $ {{instance.day_cost | number:2}} ({{instance.aggregated_day_percent | number:2}} %)</li>
+              <li>Cost per Month (if running): $ {{instance.month_cost | number:2}} ({{instance.aggregated_month_percent | number:2}} %)</li>
+              <li>Cost per Year (if running): $ {{instance.year_cost | number:2}} ({{instance.aggregated_year_percent | number:2}} %)</li>
             </ul>
             <ul class='col-md-5 col-md-offset-1'>
               <li>Description: {{instance.Description}}</li>

@@ -61,6 +61,21 @@ angular.module('awsCostMonitorApp')
               }
             }
           };
+          for (var k = 0; k < $scope.instancesList.length; k++){
+            $scope.instancesList[k]['aggregated_cost_percent'] = 
+                                                      ($scope.instancesList[k]['aggregated_cost'] /
+                                                       $scope.totalCost) * 100;
+            $scope.instancesList[k]['aggregated_day_percent'] = 
+                                                      ($scope.instancesList[k]['aggregated_day_cost'] /
+                                                       $scope.totalCostDay) * 100;
+            $scope.instancesList[k]['aggregated_month_percent'] = 
+                                                      ($scope.instancesList[k]['aggregated_month_cost'] /
+                                                       $scope.totalCostMonth) * 100;
+            $scope.instancesList[k]['aggregated_year_percent'] = 
+                                                      ($scope.instancesList[k]['aggregated_year_cost'] /
+                                                       $scope.totalCostYear) * 100;
+          };
+
           $scope.loading = false;
         })
         .error(console.log('error retrieving the data'));
